@@ -25,6 +25,7 @@ class ImageManipulationController extends Controller
     {
         return ImageManipulationResource::collection(ImageManipulation::where('user_id', $request->user()->id)->paginate());
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -55,11 +56,13 @@ class ImageManipulationController extends Controller
         /** @var UploadedFile|string $image */
         $image = $all['image'];
         unset($all['image']);
+
         $data = [
             'type' => ImageManipulation::TYPE_RESIZE,
             'data' => json_encode($all),
             'user_id' => $request->user()->id
         ];
+
         if (isset($all['album_id'])) {
             $album = Album::find($all['album_id']);
             if ($album->user_id != $request->user()->id){
@@ -67,8 +70,11 @@ class ImageManipulationController extends Controller
             }
             $data['album_id'] = $all['album_id'];
         }
+
         $dir = 'images/' . Str::random() . '/';
         $absolutePath = public_path($dir);
+
+        
         if (!File::exists($absolutePath)) {
             File::makeDirectory($absolutePath, 0755, true);
         }
